@@ -1,0 +1,33 @@
+title: Mango Test
+template:
+  params:
+    bootswatch: darkly
+
+navbar:
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "NBA Analysis"
+      href: articles/data_analysis.html
+
+  right:
+    - icon: fa-file-code-o
+      text: "Functions"
+      href: reference/index.html
+    - text: News
+      href: news/index.html
+    - icon: fa-github fa-lg
+      text: "Github"
+      href: https://github.com/seabbs/MangoTest
+
+reference:
+    - title: Functions
+      desc:  Test Functions
+      contents:
+      - sample_dist
+      - summary.sample_dist
+    - title: Package Data
+      desc: Data supplied with the package.
+      contents:
+      - free_throws

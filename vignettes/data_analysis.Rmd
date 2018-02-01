@@ -1,0 +1,35 @@
+---
+title: "Exploring the NBA free throw data"
+author: "Sam Abbott"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+**Aim** Explore the NBA free throw data supplied by Mango Solutions as a recruitment test
+
+Load analysis packages.
+
+```{r packages}
+library(tidyverse)
+library(MangoTest)
+```
+
+# Data 
+
+Load in the data and explore structure.
+
+```{r}
+str(free_throws)
+```
