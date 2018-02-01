@@ -93,7 +93,7 @@ games_df <- games_df %>%
   select(-draw)
 ```
 
-Summarise each dataset in turn
+Summarise each dataset in turn. No draws in the dataset - online search suggests NBA games are played until a team wins.
 
 ```{r sum-df}
 summary(games_df)
