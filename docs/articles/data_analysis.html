@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vignette Title • Mango Test</title>
+<title>Exploring the NBA free throw data • Mango Test</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/darkly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -65,8 +65,8 @@
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
-      <h1>Vignette Title</h1>
-                        <h4 class="author">Vignette Author</h4>
+      <h1>Exploring the NBA free throw data</h1>
+                        <h4 class="author">Sam Abbott</h4>
             
             <h4 class="date">2018-02-01</h4>
           </div>
@@ -74,210 +74,92 @@
     
     
 <div class="contents">
-<p>Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The <code>html_vignette</code> output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The <code>html_vignette</code> format:</p>
-<ul>
-<li>Never uses retina figures</li>
-<li>Has a smaller default figure size</li>
-<li>Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style</li>
-</ul>
-<div id="vignette-info" class="section level2">
-<h2 class="hasAnchor">
-<a href="#vignette-info" class="anchor"></a>Vignette Info</h2>
-<p>Note the various macros within the <code>vignette</code> section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the <code>title</code> field and the <code>\VignetteIndexEntry</code> to match the title of your vignette.</p>
-</div>
-<div id="styles" class="section level2">
-<h2 class="hasAnchor">
-<a href="#styles" class="anchor"></a>Styles</h2>
-<p>The <code>html_vignette</code> template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:</p>
-<pre><code>output: 
-  rmarkdown::html_vignette:
-    css: mystyles.css</code></pre>
-</div>
-<div id="figures" class="section level2">
-<h2 class="hasAnchor">
-<a href="#figures" class="anchor"></a>Figures</h2>
-<p>The figure sizes have been customised so that you can easily put two images side-by-side.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
-<span class="kw">plot</span>(<span class="dv">10</span><span class="op">:</span><span class="dv">1</span>)</code></pre></div>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-1-1.png" width="672"><img src="data_analysis_files/figure-html/unnamed-chunk-1-2.png" width="672"></p>
-<p>You can enable figure captions by <code>fig_caption: yes</code> in YAML:</p>
-<pre><code>output:
-  rmarkdown::html_vignette:
-    fig_caption: yes</code></pre>
-<p>Then you can use the chunk option <code>fig.cap = "Your figure caption."</code> in <strong>knitr</strong>.</p>
-</div>
-<div id="more-examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#more-examples" class="anchor"></a>More Examples</h2>
-<p>You can write math expressions, e.g. <span class="math inline">\(Y = X\beta + \epsilon\)</span>, footnotes<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, and tables, e.g. using <code><a href="http://www.rdocumentation.org/packages/knitr/topics/kable">knitr::kable()</a></code>.</p>
-<table class="table">
-<thead><tr class="header">
-<th></th>
-<th align="right">mpg</th>
-<th align="right">cyl</th>
-<th align="right">disp</th>
-<th align="right">hp</th>
-<th align="right">drat</th>
-<th align="right">wt</th>
-<th align="right">qsec</th>
-<th align="right">vs</th>
-<th align="right">am</th>
-<th align="right">gear</th>
-<th align="right">carb</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Mazda RX4</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.620</td>
-<td align="right">16.46</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td>Mazda RX4 Wag</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.875</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-<tr class="odd">
-<td>Datsun 710</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">108.0</td>
-<td align="right">93</td>
-<td align="right">3.85</td>
-<td align="right">2.320</td>
-<td align="right">18.61</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td>Hornet 4 Drive</td>
-<td align="right">21.4</td>
-<td align="right">6</td>
-<td align="right">258.0</td>
-<td align="right">110</td>
-<td align="right">3.08</td>
-<td align="right">3.215</td>
-<td align="right">19.44</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td>Hornet Sportabout</td>
-<td align="right">18.7</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">175</td>
-<td align="right">3.15</td>
-<td align="right">3.440</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td>Valiant</td>
-<td align="right">18.1</td>
-<td align="right">6</td>
-<td align="right">225.0</td>
-<td align="right">105</td>
-<td align="right">2.76</td>
-<td align="right">3.460</td>
-<td align="right">20.22</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td>Duster 360</td>
-<td align="right">14.3</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">245</td>
-<td align="right">3.21</td>
-<td align="right">3.570</td>
-<td align="right">15.84</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td>Merc 240D</td>
-<td align="right">24.4</td>
-<td align="right">4</td>
-<td align="right">146.7</td>
-<td align="right">62</td>
-<td align="right">3.69</td>
-<td align="right">3.190</td>
-<td align="right">20.00</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td>Merc 230</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">140.8</td>
-<td align="right">95</td>
-<td align="right">3.92</td>
-<td align="right">3.150</td>
-<td align="right">22.90</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td>Merc 280</td>
-<td align="right">19.2</td>
-<td align="right">6</td>
-<td align="right">167.6</td>
-<td align="right">123</td>
-<td align="right">3.92</td>
-<td align="right">3.440</td>
-<td align="right">18.30</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-</tbody>
-</table>
-<p>Also a quote using <code>&gt;</code>:</p>
-<blockquote>
-<p>“He who gives up [code] safety for [code] speed deserves neither.” (<a href="https://twitter.com/hadleywickham/status/504368538874703872">via</a>)</p>
-</blockquote>
-</div>
-<div class="footnotes">
-<hr>
-<ol>
-<li id="fn1"><p>A footnote here.<a href="#fnref1">↩</a></p></li>
-</ol>
+<p><strong>Aim</strong> Visualise some aspect of the data you find interesting, e.g., the average number of free throws per period for the regular season and the playoffs.</p>
+<p>Load analysis packages.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="co">#&gt; ── Attaching packages ─────────────────────────── tidyverse 1.2.1 ──</span>
+<span class="co">#&gt; ✔ ggplot2 2.2.1     ✔ purrr   0.2.4</span>
+<span class="co">#&gt; ✔ tibble  1.4.2     ✔ dplyr   0.7.4</span>
+<span class="co">#&gt; ✔ tidyr   0.8.0     ✔ stringr 1.2.0</span>
+<span class="co">#&gt; ✔ readr   1.1.1     ✔ forcats 0.2.0</span>
+<span class="co">#&gt; ── Conflicts ────────────────────────────── tidyverse_conflicts() ──</span>
+<span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span>
+<span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span>
+<span class="kw">library</span>(visdat)
+<span class="kw">library</span>(MangoTest)</code></pre></div>
+<div id="data" class="section level1">
+<h1 class="hasAnchor">
+<a href="#data" class="anchor"></a>Data</h1>
+<p>Load in the data and explore structure. Data lists the play by play scores in multiple games accross several seasons.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(free_throws)
+<span class="co">#&gt; Classes 'tbl_df', 'tbl' and 'data.frame':    618019 obs. of  11 variables:</span>
+<span class="co">#&gt;  $ end_result: chr  "106 - 114" "106 - 114" "106 - 114" "106 - 114" ...</span>
+<span class="co">#&gt;  $ game      : chr  "PHX - LAL" "PHX - LAL" "PHX - LAL" "PHX - LAL" ...</span>
+<span class="co">#&gt;  $ game_id   : num  2.61e+08 2.61e+08 2.61e+08 2.61e+08 2.61e+08 ...</span>
+<span class="co">#&gt;  $ period    : num  1 1 1 1 1 1 1 2 2 2 ...</span>
+<span class="co">#&gt;  $ play      : chr  "Andrew Bynum makes free throw 1 of 2" "Andrew Bynum makes free throw 2 of 2" "Andrew Bynum makes free throw 1 of 2" "Andrew Bynum misses free throw 2 of 2" ...</span>
+<span class="co">#&gt;  $ player    : chr  "Andrew Bynum" "Andrew Bynum" "Andrew Bynum" "Andrew Bynum" ...</span>
+<span class="co">#&gt;  $ playoffs  : chr  "regular" "regular" "regular" "regular" ...</span>
+<span class="co">#&gt;  $ score     : chr  "0 - 1" "0 - 2" "18 - 12" "18 - 12" ...</span>
+<span class="co">#&gt;  $ season    : chr  "2006 - 2007" "2006 - 2007" "2006 - 2007" "2006 - 2007" ...</span>
+<span class="co">#&gt;  $ shot_made : int  1 1 1 0 1 1 1 0 1 1 ...</span>
+<span class="co">#&gt;  $ time      :Classes 'hms', 'difftime'  atomic [1:618019] 42300 42300 26760 26760 26280 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "units")= chr "secs"</span>
+<span class="co">#&gt;  - attr(*, "spec")=List of 2</span>
+<span class="co">#&gt;   ..$ cols   :List of 11</span>
+<span class="co">#&gt;   .. ..$ end_result: list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_character" "collector"</span>
+<span class="co">#&gt;   .. ..$ game      : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_character" "collector"</span>
+<span class="co">#&gt;   .. ..$ game_id   : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_double" "collector"</span>
+<span class="co">#&gt;   .. ..$ period    : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_double" "collector"</span>
+<span class="co">#&gt;   .. ..$ play      : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_character" "collector"</span>
+<span class="co">#&gt;   .. ..$ player    : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_character" "collector"</span>
+<span class="co">#&gt;   .. ..$ playoffs  : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_character" "collector"</span>
+<span class="co">#&gt;   .. ..$ score     : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_character" "collector"</span>
+<span class="co">#&gt;   .. ..$ season    : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_character" "collector"</span>
+<span class="co">#&gt;   .. ..$ shot_made : list()</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_integer" "collector"</span>
+<span class="co">#&gt;   .. ..$ time      :List of 1</span>
+<span class="co">#&gt;   .. .. ..$ format: chr ""</span>
+<span class="co">#&gt;   .. .. ..- attr(*, "class")= chr  "collector_time" "collector"</span>
+<span class="co">#&gt;   ..$ default: list()</span>
+<span class="co">#&gt;   .. ..- attr(*, "class")= chr  "collector_guess" "collector"</span>
+<span class="co">#&gt;   ..- attr(*, "class")= chr "col_spec"</span></code></pre></div>
+<p>Convert characters to factors were appropriate.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tidy_free_throws &lt;-<span class="st"> </span>free_throws <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate_at</span>(<span class="dt">.vars =</span> <span class="kw">vars</span>(game, player, playoffs, season), 
+            <span class="dt">.funs =</span> <span class="kw">funs</span>(<span class="kw">factor</span>(.)))</code></pre></div>
+<p>Split out teams, and scores in each game.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tidy_free_throws &lt;-<span class="st"> </span>free_throws <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(game, <span class="kw">c</span>(<span class="st">"team_1"</span>, <span class="st">"team_2"</span>), <span class="st">" - "</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(score, <span class="kw">c</span>(<span class="st">"score_1"</span>, <span class="st">"score_2"</span>), <span class="st">" - "</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(end_result, <span class="kw">c</span>(<span class="st">"end_result_1"</span>, <span class="st">"end_result_2"</span>), <span class="st">" - "</span>)</code></pre></div>
+<p>Seperate game wide information, play information and scores information.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">game_df &lt;-<span class="st"> </span>tidy_free_throws <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(game_id, team_<span class="dv">1</span>, team_<span class="dv">2</span>, playoffs, season) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span>unique <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">gather</span>(<span class="dt">key =</span> <span class="st">"order"</span>, <span class="dt">value =</span> <span class="st">"team"</span>, team_<span class="dv">1</span>, team_<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(order, <span class="kw">c</span>(<span class="st">"tmp"</span>, <span class="st">"order"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>tmp) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">order =</span> <span class="kw">factor</span>(order))
+
+plays_df &lt;-<span class="st"> </span>tidy_free_throws <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(game_id, period, play, shot_made, time)
+
+scores_df &lt;-<span class="st"> </span>tidy_free_throws <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(game_id, score_<span class="dv">1</span>, score_<span class="dv">2</span>, period, time) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">gather</span>(<span class="dt">key =</span> <span class="st">"order"</span>, <span class="dt">value =</span> <span class="st">"score"</span>, score_<span class="dv">1</span>, score_<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(order, <span class="kw">c</span>(<span class="st">"tmp"</span>, <span class="st">"order"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>tmp) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">order =</span> <span class="kw">factor</span>(order))</code></pre></div>
 </div>
 </div>
   </div>
@@ -287,10 +169,7 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#vignette-info">Vignette Info</a></li>
-      <li><a href="#styles">Styles</a></li>
-      <li><a href="#figures">Figures</a></li>
-      <li><a href="#more-examples">More Examples</a></li>
+<li><a href="#data">Data</a></li>
       </ul>
 </div>
       </div>

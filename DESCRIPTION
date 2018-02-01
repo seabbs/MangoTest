@@ -11,6 +11,7 @@ Suggests: knitr,
     pkgdown,
     readr,
     tidyverse,
+    visdat
 Imports: ggplot2
 Remotes: rlib/pkgdown
 URL: https://github.com/seabbs/MangoTest

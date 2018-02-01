@@ -17,19 +17,62 @@ knitr::opts_chunk$set(
 ```
 
 
-**Aim** Explore the NBA free throw data supplied by Mango Solutions as a recruitment test
+**Aim** Visualise some aspect of the data you find interesting, e.g., the average number of free throws per period for the regular season and the playoffs.
 
 Load analysis packages.
 
 ```{r packages}
 library(tidyverse)
+library(visdat)
 library(MangoTest)
 ```
 
 # Data 
 
-Load in the data and explore structure.
+Load in the data and explore structure. Data lists the play by play scores in multiple games accross several seasons.
 
 ```{r}
 str(free_throws)
 ```
+
+Convert characters to factors were appropriate.
+
+```{r convert-factors}
+tidy_free_throws <- free_throws %>% 
+  mutate_at(.vars = vars(game, player, playoffs, season), 
+            .funs = funs(factor(.)))
+```
+
+Split out teams, and scores in each game.
+
+```{r split scores and teams}
+tidy_free_throws <- free_throws %>% 
+  separate(game, c("team_1", "team_2"), " - ") %>% 
+  separate(score, c("score_1", "score_2"), " - ") %>% 
+  separate(end_result, c("end_result_1", "end_result_2"), " - ")
+```
+
+
+
+Seperate game wide information, play information and scores information.
+
+```{r game-plays-info}
+game_df <- tidy_free_throws %>% 
+  select(game_id, team_1, team_2, playoffs, season) %>% 
+  unique %>% 
+  gather(key = "order", value = "team", team_1, team_2) %>% 
+  separate(order, c("tmp", "order")) %>% 
+  select(-tmp) %>% 
+  mutate(order = factor(order))
+
+plays_df <- tidy_free_throws %>% 
+  select(game_id, period, play, shot_made, time)
+
+scores_df <- tidy_free_throws %>% 
+  select(game_id, score_1, score_2, period, time) %>% 
+    gather(key = "order", value = "score", score_1, score_2) %>% 
+  separate(order, c("tmp", "order")) %>% 
+  select(-tmp) %>% 
+  mutate(order = factor(order))
+```
+

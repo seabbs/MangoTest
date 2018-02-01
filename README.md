@@ -2,7 +2,7 @@
 MangoTest
 =========
 
-R package containing answers to the following Mango Solutions recruitment questions.
+R package containing answers to the following Mango Solutions recruitment questions. See `docs/index.html` for package documentation.
 
 Questions
 ---------
