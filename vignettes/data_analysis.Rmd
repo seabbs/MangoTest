@@ -35,14 +35,6 @@ Load in the data and explore structure. Data lists the play by play scores in mu
 str(free_throws)
 ```
 
-Convert characters to factors were appropriate.
-
-```{r convert-factors}
-tidy_free_throws <- free_throws %>% 
-  mutate_at(.vars = vars(game, player, playoffs, season), 
-            .funs = funs(factor(.)))
-```
-
 Split out teams, and scores in each game.
 
 ```{r split scores and teams}
@@ -54,25 +46,58 @@ tidy_free_throws <- free_throws %>%
 
 
 
-Seperate game wide information, play information and scores information.
+Seperate game wide information, play information and scores information. Convert to factors as appropriate
 
 ```{r game-plays-info}
-game_df <- tidy_free_throws %>% 
-  select(game_id, team_1, team_2, playoffs, season) %>% 
+games_df <- tidy_free_throws %>% 
+  select(game_id, team_1, team_2, playoffs,
+         season, end_result_1, end_result_2) %>% 
   unique %>% 
+  mutate(draw = ifelse(end_result_1 == end_result_2, "Yes", "No")) %>% 
   gather(key = "order", value = "team", team_1, team_2) %>% 
-  separate(order, c("tmp", "order")) %>% 
+  separate(order, c("tmp", "order"), "_") %>% 
   select(-tmp) %>% 
-  mutate(order = factor(order))
+  gather(key = "order2", value = "end_result", 
+         end_result_1, end_result_2) %>% 
+  separate(order2, c("tmp", "order2"), "result_") %>% 
+  select(-tmp) %>% 
+  filter(order == order2) %>% 
+  select(-order2) %>% 
+  mutate_at(.vars = vars(order, team, season, playoffs),
+            .funs = funs(factor(.))) %>% 
+  mutate(end_result = as.numeric(end_result))
 
 plays_df <- tidy_free_throws %>% 
-  select(game_id, period, play, shot_made, time)
+  select(game_id, period, play, shot_made, time) %>% 
+  mutate(play = factor(play))
 
 scores_df <- tidy_free_throws %>% 
   select(game_id, score_1, score_2, period, time) %>% 
     gather(key = "order", value = "score", score_1, score_2) %>% 
-  separate(order, c("tmp", "order")) %>% 
+  separate(order, c("tmp", "order"), "_") %>% 
   select(-tmp) %>% 
-  mutate(order = factor(order))
+  mutate(order = factor(order)) %>% 
+  mutate(scores = as.numeric(score))
+```
+
+Add game outcome variable.
+
+```{r game-outcome}
+games_df <- games_df %>% 
+  group_by(game_id) %>%
+  arrange(desc(end_result), .by_group = TRUE) %>% 
+  mutate(outcome = c("Won", "Lost")) %>% 
+  ungroup() %>% 
+  mutate(outcome = ifelse(draw %in% "Yes", "Draw", outcome)) %>% 
+  mutate(outcome = factor(outcome)) %>% 
+  select(-draw)
+```
+
+Summarise each dataset in turn
+
+```{r sum-df}
+summary(games_df)
+summary(plays_df)
+summary(scores_df)
 ```
 

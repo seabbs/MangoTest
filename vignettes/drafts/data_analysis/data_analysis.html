@@ -184,33 +184,108 @@ library(MangoTest)</code></pre>
 #&gt;   ..$ default: list()
 #&gt;   .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_guess&quot; &quot;collector&quot;
 #&gt;   ..- attr(*, &quot;class&quot;)= chr &quot;col_spec&quot;</code></pre>
-<p>Convert characters to factors were appropriate.</p>
-<pre class="r"><code>tidy_free_throws &lt;- free_throws %&gt;% 
-  mutate_at(.vars = vars(game, player, playoffs, season), 
-            .funs = funs(factor(.)))</code></pre>
 <p>Split out teams, and scores in each game.</p>
 <pre class="r"><code>tidy_free_throws &lt;- free_throws %&gt;% 
   separate(game, c(&quot;team_1&quot;, &quot;team_2&quot;), &quot; - &quot;) %&gt;% 
   separate(score, c(&quot;score_1&quot;, &quot;score_2&quot;), &quot; - &quot;) %&gt;% 
   separate(end_result, c(&quot;end_result_1&quot;, &quot;end_result_2&quot;), &quot; - &quot;)</code></pre>
-<p>Seperate game wide information, play information and scores information.</p>
-<pre class="r"><code>game_df &lt;- tidy_free_throws %&gt;% 
-  select(game_id, team_1, team_2, playoffs, season) %&gt;% 
+<p>Seperate game wide information, play information and scores information. Convert to factors as appropriate</p>
+<pre class="r"><code>games_df &lt;- tidy_free_throws %&gt;% 
+  select(game_id, team_1, team_2, playoffs,
+         season, end_result_1, end_result_2) %&gt;% 
   unique %&gt;% 
+  mutate(draw = ifelse(end_result_1 == end_result_2, &quot;Yes&quot;, &quot;No&quot;)) %&gt;% 
   gather(key = &quot;order&quot;, value = &quot;team&quot;, team_1, team_2) %&gt;% 
-  separate(order, c(&quot;tmp&quot;, &quot;order&quot;)) %&gt;% 
+  separate(order, c(&quot;tmp&quot;, &quot;order&quot;), &quot;_&quot;) %&gt;% 
   select(-tmp) %&gt;% 
-  mutate(order = factor(order))
+  gather(key = &quot;order2&quot;, value = &quot;end_result&quot;, 
+         end_result_1, end_result_2) %&gt;% 
+  separate(order2, c(&quot;tmp&quot;, &quot;order2&quot;), &quot;result_&quot;) %&gt;% 
+  select(-tmp) %&gt;% 
+  filter(order == order2) %&gt;% 
+  select(-order2) %&gt;% 
+  mutate_at(.vars = vars(order, team, season, playoffs),
+            .funs = funs(factor(.))) %&gt;% 
+  mutate(end_result = as.numeric(end_result))
 
 plays_df &lt;- tidy_free_throws %&gt;% 
-  select(game_id, period, play, shot_made, time)
+  select(game_id, period, play, shot_made, time) %&gt;% 
+  mutate(play = factor(play))
 
 scores_df &lt;- tidy_free_throws %&gt;% 
   select(game_id, score_1, score_2, period, time) %&gt;% 
     gather(key = &quot;order&quot;, value = &quot;score&quot;, score_1, score_2) %&gt;% 
-  separate(order, c(&quot;tmp&quot;, &quot;order&quot;)) %&gt;% 
+  separate(order, c(&quot;tmp&quot;, &quot;order&quot;), &quot;_&quot;) %&gt;% 
   select(-tmp) %&gt;% 
-  mutate(order = factor(order))</code></pre>
+  mutate(order = factor(order)) %&gt;% 
+  mutate(scores = as.numeric(score))</code></pre>
+<p>Add game outcome variable.</p>
+<pre class="r"><code>games_df &lt;- games_df %&gt;% 
+  group_by(game_id) %&gt;%
+  arrange(desc(end_result), .by_group = TRUE) %&gt;% 
+  mutate(outcome = c(&quot;Won&quot;, &quot;Lost&quot;)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(outcome = ifelse(draw %in% &quot;Yes&quot;, &quot;Draw&quot;, outcome)) %&gt;% 
+  mutate(outcome = factor(outcome)) %&gt;% 
+  select(-draw)</code></pre>
+<p>Summarise each dataset in turn</p>
+<pre class="r"><code>summary(games_df)
+#&gt;     game_id              playoffs             season     order    
+#&gt;  Min.   :261031013   playoffs: 1672   2013 - 2014:2634   1:12874  
+#&gt;  1st Qu.:290119029   regular :24076   2008 - 2009:2632   2:12874  
+#&gt;  Median :310410028                    2009 - 2010:2626            
+#&gt;  Mean   :336085907                    2015 - 2016:2626            
+#&gt;  3rd Qu.:400489596                    2010 - 2011:2624            
+#&gt;  Max.   :400878160                    2007 - 2008:2622            
+#&gt;                                       (Other)    :9984            
+#&gt;       team         end_result     outcome     
+#&gt;  SA     :  934   Min.   : 54.00   Lost:12874  
+#&gt;  MIA    :  918   1st Qu.: 91.00   Won :12874  
+#&gt;  BOS    :  910   Median : 99.00               
+#&gt;  CLE    :  902   Mean   : 99.55               
+#&gt;  LAL    :  901   3rd Qu.:107.00               
+#&gt;  ATL    :  886   Max.   :168.00               
+#&gt;  (Other):20297
+summary(plays_df)
+#&gt;     game_id              period     
+#&gt;  Min.   :261031013   Min.   :1.000  
+#&gt;  1st Qu.:281226023   1st Qu.:2.000  
+#&gt;  Median :310306001   Median :3.000  
+#&gt;  Mean   :333936881   Mean   :2.696  
+#&gt;  3rd Qu.:400489501   3rd Qu.:4.000  
+#&gt;  Max.   :400878160   Max.   :8.000  
+#&gt;                                     
+#&gt;                                     play          shot_made     
+#&gt;  LeBron James makes free throw 2 of 2 :  2598   Min.   :0.0000  
+#&gt;  LeBron James makes free throw 1 of 2 :  2383   1st Qu.:1.0000  
+#&gt;  Kevin Durant makes free throw 2 of 2 :  2140   Median :1.0000  
+#&gt;  Kevin Durant makes free throw 1 of 2 :  2088   Mean   :0.7568  
+#&gt;  Dwight Howard makes free throw 2 of 2:  1993   3rd Qu.:1.0000  
+#&gt;  Kobe Bryant makes free throw 2 of 2  :  1941   Max.   :1.0000  
+#&gt;  (Other)                              :604876                   
+#&gt;      time         
+#&gt;  Length:618019    
+#&gt;  Class1:hms       
+#&gt;  Class2:difftime  
+#&gt;  Mode  :numeric   
+#&gt;                   
+#&gt;                   
+#&gt; 
+summary(scores_df)
+#&gt;     game_id              period          time          order     
+#&gt;  Min.   :261031013   Min.   :1.000   Length:1236038    1:618019  
+#&gt;  1st Qu.:281226023   1st Qu.:2.000   Class1:hms        2:618019  
+#&gt;  Median :310306001   Median :3.000   Class2:difftime             
+#&gt;  Mean   :333936881   Mean   :2.696   Mode  :numeric              
+#&gt;  3rd Qu.:400489501   3rd Qu.:4.000                               
+#&gt;  Max.   :400878160   Max.   :8.000                               
+#&gt;     score               scores      
+#&gt;  Length:1236038     Min.   :  0.00  
+#&gt;  Class :character   1st Qu.: 32.00  
+#&gt;  Mode  :character   Median : 57.00  
+#&gt;                     Mean   : 56.47  
+#&gt;                     3rd Qu.: 81.00  
+#&gt;                     Max.   :166.00</code></pre>
 </div>
 
 

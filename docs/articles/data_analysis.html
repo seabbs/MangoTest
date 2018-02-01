@@ -133,33 +133,108 @@
 <span class="co">#&gt;   ..$ default: list()</span>
 <span class="co">#&gt;   .. ..- attr(*, "class")= chr  "collector_guess" "collector"</span>
 <span class="co">#&gt;   ..- attr(*, "class")= chr "col_spec"</span></code></pre></div>
-<p>Convert characters to factors were appropriate.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tidy_free_throws &lt;-<span class="st"> </span>free_throws <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate_at</span>(<span class="dt">.vars =</span> <span class="kw">vars</span>(game, player, playoffs, season), 
-            <span class="dt">.funs =</span> <span class="kw">funs</span>(<span class="kw">factor</span>(.)))</code></pre></div>
 <p>Split out teams, and scores in each game.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tidy_free_throws &lt;-<span class="st"> </span>free_throws <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">separate</span>(game, <span class="kw">c</span>(<span class="st">"team_1"</span>, <span class="st">"team_2"</span>), <span class="st">" - "</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">separate</span>(score, <span class="kw">c</span>(<span class="st">"score_1"</span>, <span class="st">"score_2"</span>), <span class="st">" - "</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">separate</span>(end_result, <span class="kw">c</span>(<span class="st">"end_result_1"</span>, <span class="st">"end_result_2"</span>), <span class="st">" - "</span>)</code></pre></div>
-<p>Seperate game wide information, play information and scores information.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">game_df &lt;-<span class="st"> </span>tidy_free_throws <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">select</span>(game_id, team_<span class="dv">1</span>, team_<span class="dv">2</span>, playoffs, season) <span class="op">%&gt;%</span><span class="st"> </span>
+<p>Seperate game wide information, play information and scores information. Convert to factors as appropriate</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">games_df &lt;-<span class="st"> </span>tidy_free_throws <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(game_id, team_<span class="dv">1</span>, team_<span class="dv">2</span>, playoffs,
+         season, end_result_<span class="dv">1</span>, end_result_<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span>unique <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">draw =</span> <span class="kw">ifelse</span>(end_result_<span class="dv">1</span> <span class="op">==</span><span class="st"> </span>end_result_<span class="dv">2</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">gather</span>(<span class="dt">key =</span> <span class="st">"order"</span>, <span class="dt">value =</span> <span class="st">"team"</span>, team_<span class="dv">1</span>, team_<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">separate</span>(order, <span class="kw">c</span>(<span class="st">"tmp"</span>, <span class="st">"order"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(order, <span class="kw">c</span>(<span class="st">"tmp"</span>, <span class="st">"order"</span>), <span class="st">"_"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>tmp) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">order =</span> <span class="kw">factor</span>(order))
+<span class="st">  </span><span class="kw">gather</span>(<span class="dt">key =</span> <span class="st">"order2"</span>, <span class="dt">value =</span> <span class="st">"end_result"</span>, 
+         end_result_<span class="dv">1</span>, end_result_<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(order2, <span class="kw">c</span>(<span class="st">"tmp"</span>, <span class="st">"order2"</span>), <span class="st">"result_"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>tmp) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(order <span class="op">==</span><span class="st"> </span>order2) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>order2) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate_at</span>(<span class="dt">.vars =</span> <span class="kw">vars</span>(order, team, season, playoffs),
+            <span class="dt">.funs =</span> <span class="kw">funs</span>(<span class="kw">factor</span>(.))) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">end_result =</span> <span class="kw">as.numeric</span>(end_result))
 
 plays_df &lt;-<span class="st"> </span>tidy_free_throws <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">select</span>(game_id, period, play, shot_made, time)
+<span class="st">  </span><span class="kw">select</span>(game_id, period, play, shot_made, time) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">play =</span> <span class="kw">factor</span>(play))
 
 scores_df &lt;-<span class="st"> </span>tidy_free_throws <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(game_id, score_<span class="dv">1</span>, score_<span class="dv">2</span>, period, time) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">gather</span>(<span class="dt">key =</span> <span class="st">"order"</span>, <span class="dt">value =</span> <span class="st">"score"</span>, score_<span class="dv">1</span>, score_<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">separate</span>(order, <span class="kw">c</span>(<span class="st">"tmp"</span>, <span class="st">"order"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(order, <span class="kw">c</span>(<span class="st">"tmp"</span>, <span class="st">"order"</span>), <span class="st">"_"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>tmp) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">order =</span> <span class="kw">factor</span>(order))</code></pre></div>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">order =</span> <span class="kw">factor</span>(order)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">scores =</span> <span class="kw">as.numeric</span>(score))</code></pre></div>
+<p>Add game outcome variable.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">games_df &lt;-<span class="st"> </span>games_df <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(game_id) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(end_result), <span class="dt">.by_group =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">outcome =</span> <span class="kw">c</span>(<span class="st">"Won"</span>, <span class="st">"Lost"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">outcome =</span> <span class="kw">ifelse</span>(draw <span class="op">%in%</span><span class="st"> "Yes"</span>, <span class="st">"Draw"</span>, outcome)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">outcome =</span> <span class="kw">factor</span>(outcome)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>draw)</code></pre></div>
+<p>Summarise each dataset in turn</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(games_df)
+<span class="co">#&gt;     game_id              playoffs             season     order    </span>
+<span class="co">#&gt;  Min.   :261031013   playoffs: 1672   2013 - 2014:2634   1:12874  </span>
+<span class="co">#&gt;  1st Qu.:290119029   regular :24076   2008 - 2009:2632   2:12874  </span>
+<span class="co">#&gt;  Median :310410028                    2009 - 2010:2626            </span>
+<span class="co">#&gt;  Mean   :336085907                    2015 - 2016:2626            </span>
+<span class="co">#&gt;  3rd Qu.:400489596                    2010 - 2011:2624            </span>
+<span class="co">#&gt;  Max.   :400878160                    2007 - 2008:2622            </span>
+<span class="co">#&gt;                                       (Other)    :9984            </span>
+<span class="co">#&gt;       team         end_result     outcome     </span>
+<span class="co">#&gt;  SA     :  934   Min.   : 54.00   Lost:12874  </span>
+<span class="co">#&gt;  MIA    :  918   1st Qu.: 91.00   Won :12874  </span>
+<span class="co">#&gt;  BOS    :  910   Median : 99.00               </span>
+<span class="co">#&gt;  CLE    :  902   Mean   : 99.55               </span>
+<span class="co">#&gt;  LAL    :  901   3rd Qu.:107.00               </span>
+<span class="co">#&gt;  ATL    :  886   Max.   :168.00               </span>
+<span class="co">#&gt;  (Other):20297</span>
+<span class="kw">summary</span>(plays_df)
+<span class="co">#&gt;     game_id              period     </span>
+<span class="co">#&gt;  Min.   :261031013   Min.   :1.000  </span>
+<span class="co">#&gt;  1st Qu.:281226023   1st Qu.:2.000  </span>
+<span class="co">#&gt;  Median :310306001   Median :3.000  </span>
+<span class="co">#&gt;  Mean   :333936881   Mean   :2.696  </span>
+<span class="co">#&gt;  3rd Qu.:400489501   3rd Qu.:4.000  </span>
+<span class="co">#&gt;  Max.   :400878160   Max.   :8.000  </span>
+<span class="co">#&gt;                                     </span>
+<span class="co">#&gt;                                     play          shot_made     </span>
+<span class="co">#&gt;  LeBron James makes free throw 2 of 2 :  2598   Min.   :0.0000  </span>
+<span class="co">#&gt;  LeBron James makes free throw 1 of 2 :  2383   1st Qu.:1.0000  </span>
+<span class="co">#&gt;  Kevin Durant makes free throw 2 of 2 :  2140   Median :1.0000  </span>
+<span class="co">#&gt;  Kevin Durant makes free throw 1 of 2 :  2088   Mean   :0.7568  </span>
+<span class="co">#&gt;  Dwight Howard makes free throw 2 of 2:  1993   3rd Qu.:1.0000  </span>
+<span class="co">#&gt;  Kobe Bryant makes free throw 2 of 2  :  1941   Max.   :1.0000  </span>
+<span class="co">#&gt;  (Other)                              :604876                   </span>
+<span class="co">#&gt;      time         </span>
+<span class="co">#&gt;  Length:618019    </span>
+<span class="co">#&gt;  Class1:hms       </span>
+<span class="co">#&gt;  Class2:difftime  </span>
+<span class="co">#&gt;  Mode  :numeric   </span>
+<span class="co">#&gt;                   </span>
+<span class="co">#&gt;                   </span>
+<span class="co">#&gt; </span>
+<span class="kw">summary</span>(scores_df)
+<span class="co">#&gt;     game_id              period          time          order     </span>
+<span class="co">#&gt;  Min.   :261031013   Min.   :1.000   Length:1236038    1:618019  </span>
+<span class="co">#&gt;  1st Qu.:281226023   1st Qu.:2.000   Class1:hms        2:618019  </span>
+<span class="co">#&gt;  Median :310306001   Median :3.000   Class2:difftime             </span>
+<span class="co">#&gt;  Mean   :333936881   Mean   :2.696   Mode  :numeric              </span>
+<span class="co">#&gt;  3rd Qu.:400489501   3rd Qu.:4.000                               </span>
+<span class="co">#&gt;  Max.   :400878160   Max.   :8.000                               </span>
+<span class="co">#&gt;     score               scores      </span>
+<span class="co">#&gt;  Length:1236038     Min.   :  0.00  </span>
+<span class="co">#&gt;  Class :character   1st Qu.: 32.00  </span>
+<span class="co">#&gt;  Mode  :character   Median : 57.00  </span>
+<span class="co">#&gt;                     Mean   : 56.47  </span>
+<span class="co">#&gt;                     3rd Qu.: 81.00  </span>
+<span class="co">#&gt;                     Max.   :166.00</span></code></pre></div>
 </div>
 </div>
   </div>
