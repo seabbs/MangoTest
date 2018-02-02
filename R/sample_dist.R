@@ -38,6 +38,10 @@ sample_dist <- function(n = NULL, dist = NULL, ...) {
     stop("The number of samples must be an integer")
   }
 
+  if (length(n) > 1) {
+    stop("The number of samples must be a single number.")
+  }
+
   if(!is.function(dist)) {
     stop("dist must be a function to sample from a probability distribution.
          An example for the normal distribution is rnorm")
