@@ -7,7 +7,7 @@
 #'  (Normal, Poisson or Binomial). The function should be able to handle
 #'  additional parameters depending on the distribution chosen, e.g., a `lambda`
 #'   for Poisson samples.
-#' @param n Numeric, the number of samples to take.
+#' @param n Numeric (or integer), the number of samples to take.
 #' @param dist A function which samples from a probability distribution. The first
 #' arguement must be the number of samples, additional arguements can be specified with
 #' \code{...}. Possible options are \code{rnorm} (normal), \code{rpois} (Poisson), and
@@ -34,6 +34,10 @@ sample_dist <- function(n = NULL, dist = NULL, ...) {
     stop("The number of samples (n) must be numeric.")
   }
 
+  if(!(n%%1==0)) {
+    stop("The number of samples must be an integer")
+  }
+
   if(!is.function(dist)) {
     stop("dist must be a function to sample from a probability distribution.
          An example for the normal distribution is rnorm")
@@ -41,7 +45,7 @@ sample_dist <- function(n = NULL, dist = NULL, ...) {
 
   samples <- dist(n, ...)
 
-  class(samples) <- c("sample_dist", "numeric")
+  class(samples) <- c("sample_dist", class(samples))
 
   return(samples)
 }

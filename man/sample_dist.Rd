@@ -7,7 +7,7 @@
 sample_dist(n = NULL, dist = NULL, ...)
 }
 \arguments{
-\item{n}{Numeric, the number of samples to take.}
+\item{n}{Numeric (or integer), the number of samples to take.}
 
 \item{dist}{A function which samples from a probability distribution. The first
 arguement must be the number of samples, additional arguements can be specified with
