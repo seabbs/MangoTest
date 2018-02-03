@@ -3,7 +3,7 @@ MAN =  man
 DOCS = docs
 DOCS_ART = $(DOCS)/articles
 
-all: build_data docs package build_vignettes README.md package_site
+all: build_data document package build_vignettes README.md package_site
 
 
 #Update data
@@ -12,7 +12,7 @@ build_data:
 		cd data-raw && make
 
 #Build update documents and build package
-docs:
+document:
      R -e 'devtools::document()'
 
 package:

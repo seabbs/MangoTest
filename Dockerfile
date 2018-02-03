@@ -12,8 +12,6 @@ RUN apt-get install -y \
 
 ADD . /home/rstudio/MangoTest
 
-RUN Rscript -e 'devtools::install_github("hadley/pkgdown")'
-
 RUN Rscript -e 'devtools::install_deps("home/rstudio/MangoTest")'
 
 RUN Rscript -e 'devtools::install("home/rstudio/MangoTest")'

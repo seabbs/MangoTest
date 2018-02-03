@@ -13,8 +13,8 @@
 #' \code{...}. Possible options are \code{rnorm} (normal), \code{rpois} (Poisson), and
 #' \code{rbinom} (Binomial).
 #' @param ... Additional arguements to pass to the specified \code{dist} function.
-#'
 #' @return A vector of samples from the specified distribution.
+#' @importFrom stats quantile
 #' @export
 #'
 #' @examples
@@ -34,15 +34,15 @@ sample_dist <- function(n = NULL, dist = NULL, ...) {
     stop("The number of samples (n) must be numeric.")
   }
 
-  if(!(n%%1==0)) {
-    stop("The number of samples must be an integer")
-  }
-
   if (length(n) > 1) {
     stop("The number of samples must be a single number.")
   }
 
-  if(!is.function(dist)) {
+  if (!(n %% 1 == 0)) {
+    stop("The number of samples must be an integer")
+  }
+
+  if (!is.function(dist)) {
     stop("dist must be a function to sample from a probability distribution.
          An example for the normal distribution is rnorm")
   }

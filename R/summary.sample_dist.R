@@ -4,11 +4,13 @@
 #' @description \code{summary} method for class "sample_dist".
 #' @usage
 #' ## S3 method for class
-#' summary(sample_vect, plot = TRUE)
-#' @param sample_vect A numeric vector of class "sample_dist".
+#' summary(object, plot = TRUE)
+#' @param object A numeric vector of class "sample_dist".
 #' @param plot Logical, defaults to \code{TRUE}. Produces a summary plot.
 #' @seealso summary
-#' @return Prints a summary table to the terminal
+#' @aliases summary
+#' @method summary sample_dist
+#' @return Prints a summary table to the terminal and a summary plot
 #' @export
 #' @import ggplot2
 #' @examples
@@ -17,24 +19,24 @@
 #'
 #' ## Create a summary
 #' summary(x)
-summary.sample_dist <- function(sample_vect = NULL, plot = TRUE) {
-  if (is.null(sample_vect)) {
+summary.sample_dist <- function(object = NULL, plot = TRUE, ...) {
+  if (is.null(object)) {
     stop("A vector of samples from a probability distribution is required")
   }
 
-  if(!is.numeric(sample_vect)) {
+  if (!is.numeric(object)) {
     stop("The vector of probability samples must be numeric")
   }
 
-  n <- length(sample_vect)
-  min <- min(sample_vect)
-  max <- max(sample_vect)
-  mean <- mean(sample_vect)
-  median <- median(sample_vect)
-  lll <- quantile(sample_vect, 0.025)
-  ll <- quantile(sample_vect, 0.25)
-  hh <- quantile(sample_vect, 0.75)
-  hhh <- quantile(sample_vect, 0.975)
+  n <- length(object)
+  min <- min(object)
+  max <- max(object)
+  mean <- mean(object)
+  median <- median(object)
+  lll <- quantile(object, 0.025)
+  ll <- quantile(object, 0.25)
+  hh <- quantile(object, 0.75)
+  hhh <- quantile(object, 0.975)
 
   sum_list <- c(Samples = n,
                 Minimum = min,
@@ -50,7 +52,12 @@ summary.sample_dist <- function(sample_vect = NULL, plot = TRUE) {
   rest_sum_list <- sum_list[c("2.5%", "25%", "Mean", "Median", "75%", "97.5%")]
 
   if (plot) {
-    plot <- ggplot(data.frame(samples = sample_vect),
+    samples <- NULL
+    value <- NULL
+    Measures <- NULL
+    quantile <- NULL
+
+    plot <- ggplot(data.frame(samples = object),
                    aes(x = samples, fill = 1)) +
       geom_vline(data = data.frame(Measures = names(rest_sum_list),
                                    value = rest_sum_list),

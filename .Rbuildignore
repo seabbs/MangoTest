@@ -7,3 +7,8 @@
 ^\.travis\.yml$
 vignettes/drafts$
 ^docs$
+Makefile$
+vignettes/Makefile$
+data-raw/Makefile$
+Dockerfile$
+_pkgdown.yaml$

@@ -2,18 +2,19 @@
 % Please edit documentation in R/summary.sample_dist.R
 \name{summary.sample_dist}
 \alias{summary.sample_dist}
+\alias{summary}
 \title{Summarising a sample of a probability distribution.}
 \usage{
 ## S3 method for class
-summary(sample_vect, plot = TRUE)
+summary(object, plot = TRUE)
 }
 \arguments{
-\item{sample_vect}{A numeric vector of class "sample_dist".}
+\item{object}{A numeric vector of class "sample_dist".}
 
 \item{plot}{Logical, defaults to \code{TRUE}. Produces a summary plot.}
 }
 \value{
-Prints a summary table to the terminal
+Prints a summary table to the terminal and a summary plot
 }
 \description{
 \code{summary} method for class "sample_dist".

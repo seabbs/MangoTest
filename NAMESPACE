@@ -3,3 +3,4 @@
 S3method(summary,sample_dist)
 export(sample_dist)
 import(ggplot2)
+importFrom(stats,quantile)

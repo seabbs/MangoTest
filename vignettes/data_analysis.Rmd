@@ -1,30 +1,35 @@
 ---
-title: "Exploring the NBA free throw data"
+title: "Exploring the NBA Free Throw Data"
 author: "Sam Abbott"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+    html_vignette:
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
+  
 )
 ```
 
+#Aim
 
-**Aim** Visualise some aspect of the data you find interesting, e.g., the average number of free throws per period for the regular season and the playoffs.
+Visualise some aspect of the data you find interesting, e.g., the average number of free throws per period for the regular season and the playoffs.
 
+# Set up
 Load analysis packages.
 
 ```{r packages}
 library(tidyverse)
-library(visdat)
 library(MangoTest)
+library(ggridges)
+library(plotly)
 ```
 
 # Data 
@@ -46,7 +51,7 @@ tidy_free_throws <- free_throws %>%
 
 
 
-Seperate game wide information, play information and scores information. Convert to factors as appropriate
+Seperate game wide information, play information and scores information. Convert to factors as appropriate.
 
 ```{r game-plays-info}
 games_df <- tidy_free_throws %>% 
@@ -65,11 +70,12 @@ games_df <- tidy_free_throws %>%
   select(-order2) %>% 
   mutate_at(.vars = vars(order, team, season, playoffs),
             .funs = funs(factor(.))) %>% 
-  mutate(end_result = as.numeric(end_result))
+  mutate(end_result = as.numeric(end_result)) %>% 
+  mutate(season = factor(season, levels = rev(paste0(2006:2015, " - ", 2007:2016))))
 
 plays_df <- tidy_free_throws %>% 
-  select(game_id, period, play, shot_made, time) %>% 
-  mutate(play = factor(play))
+  select(game_id, period, play, player, shot_made, time) %>% 
+  mutate(player = factor(player))
 
 scores_df <- tidy_free_throws %>% 
   select(game_id, score_1, score_2, period, time) %>% 
@@ -77,7 +83,7 @@ scores_df <- tidy_free_throws %>%
   separate(order, c("tmp", "order"), "_") %>% 
   select(-tmp) %>% 
   mutate(order = factor(order)) %>% 
-  mutate(scores = as.numeric(score))
+  mutate(score = as.numeric(score))
 ```
 
 Add game outcome variable.
@@ -101,3 +107,74 @@ summary(plays_df)
 summary(scores_df)
 ```
 
+# Visualisations
+
+## Comparision of Final Scores over Multiple Seasons
+
+
+```{r mult-season-final-scores}
+games_df %>%
+  ggplot(aes(x = end_result, y = season, fill = outcome)) +
+  geom_density_ridges(alpha = 0.6) +
+  theme_minimal() +
+  scale_fill_viridis_d() +
+  guides(fill = guide_legend(title = "Game Outcome")) +
+  labs(x = "Final Score",
+       y = "Season",
+       title = "Distribution of NBA Final Scores",
+       subtitle = "By Game Outcome from 2006 until 2016",
+       caption = "By Sam Abbott, for Mango Solutions. Source: NBA Free Throws")
+```
+
+## Times at Which Points were Scored During Play
+
+```{r}
+scores_df %>% 
+  left_join(games_df %>% 
+              select(game_id, order, team, outcome, season),
+            by = c("game_id", "order")) %>%  
+  mutate(period = factor(period)) %>% 
+  group_by(team, period, game_id) %>% 
+  arrange(desc(score), .by_group = TRUE) %>% 
+  slice(1) %>%
+  ungroup %>% 
+  ggplot(aes(x = score, y = period,
+             fill = outcome)) +
+  geom_density_ridges(alpha = 0.6) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  guides(fill = guide_legend(title = "Game Outcome")) +
+  labs(x = "Score",
+       y = "Period",
+       title = "Distribution of NBA Scores during Play",
+       subtitle = "By Game Outcome for all Teams: 2006 - 2016",
+       caption = "By Sam Abbott, for Mango Solutions. Source: NBA Free Throws")
+```
+
+## Conversion Rates of Free Throws by Player
+
+
+```{r}
+conv_player_df <- plays_df %>% 
+  left_join(games_df %>% 
+              select(game_id, season) %>% 
+              unique,
+            by = "game_id") %>% 
+  group_by(player, season) %>% 
+  summarise(conversion = mean(shot_made), shots = n()) %>% 
+  mutate(conversion = round(conversion, digits = 3)) %>% 
+  ungroup
+
+conv_player_df %>% 
+  plot_ly(y = ~conversion*100, x = ~shots, 
+          text = ~player,
+          frame = ~season) %>%
+  add_markers() %>% 
+  layout(yaxis = list(title = "Conversion Rate", range = c(0, 110))) %>% 
+  layout(yaxis = list(ticksuffix = "%")) %>% 
+  layout(xaxis = list(title = "Free Throws")) %>% 
+  layout(title = "NBA Free Throw Conversion Rate") %>% 
+  animation_opts(2000, redraw = FALSE, easing = "elastic") %>% 
+  animation_slider(currentvalue = list(prefix = "Season: ")) %>% 
+  hide_legend()
+```
