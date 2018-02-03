@@ -8,7 +8,7 @@
 #' @seealso summary
 #' @aliases summary
 #' @method summary sample_dist
-#' @return Prints a summary table to the terminal and a summary plot
+#' @return Prints a summary table to the terminal and a summary plot.
 #' @export
 #' @import ggplot2
 #' @examples

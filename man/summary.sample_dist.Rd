@@ -15,7 +15,7 @@
 \item{...}{Pass additional arguements to summary function.}
 }
 \value{
-Prints a summary table to the terminal and a summary plot
+Prints a summary table to the terminal and a summary plot.
 }
 \description{
 \code{summary} method for class "sample_dist".
