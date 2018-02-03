@@ -2,11 +2,9 @@
 #' Summarising a sample of a probability distribution.
 #'
 #' @description \code{summary} method for class "sample_dist".
-#' @usage
-#' ## S3 method for class
-#' summary(object, plot = TRUE)
 #' @param object A numeric vector of class "sample_dist".
 #' @param plot Logical, defaults to \code{TRUE}. Produces a summary plot.
+#' @param ... Pass additional arguements to summary function.
 #' @seealso summary
 #' @aliases summary
 #' @method summary sample_dist

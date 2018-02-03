@@ -5,13 +5,14 @@
 \alias{summary}
 \title{Summarising a sample of a probability distribution.}
 \usage{
-## S3 method for class
-summary(object, plot = TRUE)
+\method{summary}{sample_dist}(object = NULL, plot = TRUE, ...)
 }
 \arguments{
 \item{object}{A numeric vector of class "sample_dist".}
 
 \item{plot}{Logical, defaults to \code{TRUE}. Produces a summary plot.}
+
+\item{...}{Pass additional arguements to summary function.}
 }
 \value{
 Prints a summary table to the terminal and a summary plot
